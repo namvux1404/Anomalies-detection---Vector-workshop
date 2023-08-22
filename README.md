@@ -6,4 +6,4 @@ Reference :
 
 - https://github.com/d-ailin/GDN
 
-Data : We use part of msl dataset(refer to https://github.com/khundman/telemanom/tree/master)
+Data : small sample of Curiosity Rover on Mars (MSL) dataset(refer to https://github.com/khundman/telemanom/tree/master)
