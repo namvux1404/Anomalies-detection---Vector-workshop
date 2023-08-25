@@ -144,6 +144,35 @@ class Main():
         fig.show()
         fig.write_image("images/test_embedding.png")
 
+        print('\n =========================** Test_results Dim **============================')
+        print(f"test_predicted_dim = ({len(self.test_result[0])},{len(self.test_result[0][0])})")
+        pd_test_predicted = pd.DataFrame(self.test_result[0])
+        print(pd_test_predicted.head(10))
+        print('------ \n')
+
+        print(f"test_ground_dim = ({len(self.test_result[1])},{len(self.test_result[1][0])})")
+        pd_test_ground_dim = pd.DataFrame(self.test_result[1])
+        print(pd_test_ground_dim.head(10))
+        print('------ \n')
+
+        # print(f"test_labels_dim = ({len(self.test_result[2])},{len(self.test_result[2][0])})")
+        # pd_test_labels_dim = pd.DataFrame(self.test_result[2])
+        # print(pd_test_labels_dim.head(10))
+
+        #plot for predicted labels
+        labels = self.get_score(self.test_result, self.val_result)
+        pred_labels = labels[0]
+        gt_labels = labels[1]
+
+        pd_labels = pd.DataFrame(list(zip(gt_labels, pred_labels)), 
+                                  columns=["gt_label","pred_label"])
+
+        print('------- Save csv predicted values -------')
+        path = '/content/Anomalies-detection---Vector-workshop/data/pred_labels.csv'
+        pd_labels.to_csv(path)
+        print(f'Saved in {path}')
+
+
     def get_loaders(self, train_dataset, seed, batch, val_ratio=0.1):
         dataset_len = int(len(train_dataset))
         train_use_len = int(dataset_len * (1 - val_ratio))
@@ -188,9 +217,16 @@ class Main():
         elif self.env_config['report'] == 'val':
             info = top1_val_info
 
+        pred_labels = info[5]
+        gt_labels = info[6]
+
         print(f'F1 score: {info[0]}')
         print(f'precision: {info[1]}')
-        print(f'recall: {info[2]}\n')
+        print(f'recall: {info[2]}')
+        print(f'auc_score: {info[3]}')
+        print(f'threshold: {info[4]}\n')
+        # print(len(pred_labels))
+        return pred_labels, gt_labels
 
 
     def get_save_path(self, feature_name=''):
