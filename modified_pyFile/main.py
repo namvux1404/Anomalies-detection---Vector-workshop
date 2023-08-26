@@ -134,7 +134,7 @@ class Main():
         df_embedding = pd.DataFrame(embedding_out.cpu().detach().numpy(), index = index_labels)
         df_embedding = df_embedding.reset_index(names=['sensor_class'])
         #display(df_embedding)
-        tsne = TSNE(n_components=2, perplexity = 20, random_state=0)
+        tsne = TSNE(n_components=2, perplexity = 20, random_state=42)
         projections = tsne.fit_transform(df_embedding.iloc[:,1:])
         fig = px.scatter(
             projections, x=0, y=1, text=df_embedding.sensor_class,
@@ -170,6 +170,10 @@ class Main():
         print('------- Save csv predicted values -------')
         path = '/content/Anomalies-detection---Vector-workshop/data/pred_labels.csv'
         pd_labels.to_csv(path)
+        path_pred_sensor = '/content/Anomalies-detection---Vector-workshop/data/pred_sensor.csv'
+        pd_test_predicted.to_csv(path_pred_sensor)
+        path_label_sensor = '/content/Anomalies-detection---Vector-workshop/data/label_sensor.csv'
+        pd_test_ground_dim.to_csv(path_label_sensor)
         print(f'Saved in {path}')
 
 
