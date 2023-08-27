@@ -126,8 +126,9 @@ class Main():
         _, self.test_result = test(best_model, self.test_dataloader)
         _, self.val_result = test(best_model, self.val_dataloader)
 
-        self.get_score(self.test_result, self.val_result)
+        
 
+        print('\n =========================** Save embeddings img **============================')
         ### add the embedding output for visualizaiton during test, embedding_out: [num_sensor, dim=64]
         embedding_out = best_model.embedding(torch.arange(0,len(self.feature_map)).to(self.device))
         index_labels = self.feature_map
@@ -141,9 +142,13 @@ class Main():
             color=df_embedding.sensor_class, labels={'color': 'sensor_class'}
           )
         fig.update_traces(textposition='top center')
-        fig.show()
-        fig.write_image("images/test_embedding.png")
+        # fig.show()
+        img_emb_path = "/content/Anomalies-detection---Vector-workshop/images/test_embedding.png"
+        fig.write_image(img_emb_path)
+        print(f'Saved embeddings image in {img_emb_path}')
 
+        labels = self.get_score(self.test_result, self.val_result)
+        
         print('\n =========================** Test_results Dim **============================')
         print(f"test_predicted_dim = ({len(self.test_result[0])},{len(self.test_result[0][0])})")
         pd_test_predicted = pd.DataFrame(self.test_result[0])
@@ -151,26 +156,29 @@ class Main():
         print('------ \n')
 
         print(f"test_ground_dim = ({len(self.test_result[1])},{len(self.test_result[1][0])})")
-        pd_test_ground_dim = pd.DataFrame(self.test_result[1])
-        print(pd_test_ground_dim.head(10))
+        pd_test_ground = pd.DataFrame(self.test_result[1])
+        print(pd_test_ground.head(10))
         print('------ \n')
 
-        # print(f"test_labels_dim = ({len(self.test_result[2])},{len(self.test_result[2][0])})")
-        # pd_test_labels_dim = pd.DataFrame(self.test_result[2])
-        # print(pd_test_labels_dim.head(10))
-
         #plot for predicted labels
-        labels = self.get_score(self.test_result, self.val_result)
         pred_labels = labels[0]
         gt_labels = labels[1]
 
         pd_labels = pd.DataFrame(list(zip(gt_labels, pred_labels)), 
                                   columns=["gt_label","pred_label"])
 
-        print('------- Save csv predicted values -------')
+        print('------- Save csv results values -------')
         path = '/content/Anomalies-detection---Vector-workshop/data/pred_labels.csv'
         pd_labels.to_csv(path)
         print(f'Saved in {path}')
+
+        path_pred_sensor = '/content/Anomalies-detection---Vector-workshop/data/pred_sensor.csv'
+        pd_test_predicted.to_csv(path_pred_sensor)
+        print(f'Saved in {path_pred_sensor}')
+
+        path_gt_sensor = '/content/Anomalies-detection---Vector-workshop/data/label_sensor.csv'
+        pd_test_ground.to_csv(path_gt_sensor)
+        print(f'Saved in {path_gt_sensor}')
 
 
     def get_loaders(self, train_dataset, seed, batch, val_ratio=0.1):
@@ -225,7 +233,7 @@ class Main():
         print(f'recall: {info[2]}')
         print(f'auc_score: {info[3]}')
         print(f'threshold: {info[4]}\n')
-        # print(len(pred_labels))
+
         return pred_labels, gt_labels
 
 
