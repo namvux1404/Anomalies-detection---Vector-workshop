@@ -33,6 +33,11 @@ import matplotlib.pyplot as plt
 import json
 import random
 
+### add the t-SNE plotting libs
+from sklearn.manifold import TSNE
+import plotly.express as px
+from IPython.display import display
+
 class Main():
     def __init__(self, train_config, env_config, debug=False):
 
@@ -96,8 +101,6 @@ class Main():
                 topk=train_config['topk']
             ).to(self.device)
 
-
-
     def run(self):
 
         if len(self.env_config['load_model_path']) > 0:
@@ -122,6 +125,24 @@ class Main():
 
         _, self.test_result = test(best_model, self.test_dataloader)
         _, self.val_result = test(best_model, self.val_dataloader)
+
+        self.get_score(self.test_result, self.val_result)
+
+        ### add the embedding output for visualizaiton during test, embedding_out: [num_sensor, dim=64]
+        embedding_out = best_model.embedding(torch.arange(0,len(self.feature_map)).to(self.device))
+        index_labels = self.feature_map
+        df_embedding = pd.DataFrame(embedding_out.cpu().detach().numpy(), index = index_labels)
+        df_embedding = df_embedding.reset_index(names=['sensor_class'])
+        #display(df_embedding)
+        tsne = TSNE(n_components=2, perplexity = 20, random_state=0)
+        projections = tsne.fit_transform(df_embedding.iloc[:,1:])
+        fig = px.scatter(
+            projections, x=0, y=1, text=df_embedding.sensor_class,
+            color=df_embedding.sensor_class, labels={'color': 'sensor_class'}
+          )
+        fig.update_traces(textposition='top center')
+        fig.show()
+        fig.write_image("images/test_embedding.png")
 
         print('\n =========================** Test_results Dim **============================')
         print(f"test_predicted_dim = ({len(self.test_result[0])},{len(self.test_result[0][0])})")
@@ -151,8 +172,6 @@ class Main():
         pd_labels.to_csv(path)
         print(f'Saved in {path}')
 
-        
-
 
     def get_loaders(self, train_dataset, seed, batch, val_ratio=0.1):
         dataset_len = int(len(train_dataset))
@@ -179,12 +198,10 @@ class Main():
     def get_score(self, test_result, val_result):
 
         feature_num = len(test_result[0][0])
-
         np_test_result = np.array(test_result)
         np_val_result = np.array(val_result)
 
         test_labels = np_test_result[2, :, 0].tolist()
-        # print(np.shape(test_labels))
     
         test_scores, normal_scores = get_full_err_scores(test_result, val_result)
 
