@@ -6,6 +6,10 @@ Reference :
 
 - https://github.com/d-ailin/GDN
 
+### Team members:
+- Binglin Li
+- Van Nam Vu
+
 ### Data: 
 Small sample of Curiosity Rover on Mars (MSL) dataset(refer to https://github.com/khundman/telemanom/tree/master)
 
