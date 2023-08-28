@@ -6,9 +6,10 @@ Reference :
 
 - https://github.com/d-ailin/GDN
 
-Data : small sample of Curiosity Rover on Mars (MSL) dataset(refer to https://github.com/khundman/telemanom/tree/master)
+### Data: 
+Small sample of Curiosity Rover on Mars (MSL) dataset(refer to https://github.com/khundman/telemanom/tree/master)
 
 ### Graph Deviation Network architecture:
 ![Screenshot](GDN-model.png)
 
-### Please use notebook Multivariate_timeseries_anomalies_GDN.ipynb for our implementation
+### Please take a look at -> Multivariate_timeseries_anomalies_GDN.ipynb
