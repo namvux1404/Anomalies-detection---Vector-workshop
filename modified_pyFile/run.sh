@@ -1,7 +1,7 @@
 gpu_n=$1
 DATASET=$2
 
-seed=5
+seed=0
 BATCH_SIZE=32
 SLIDE_WIN=$3
 dim=64
