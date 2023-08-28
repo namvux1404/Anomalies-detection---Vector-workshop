@@ -33,10 +33,10 @@ default_edge_color = (0.35686275, 0.20392157, 0.34901961, 0.1)
 
 train_config = {
     'batch': 32,
-    'epoch': 30,
-    'slide_win': 5,
+    'epoch': 40,
+    'slide_win': 10,
     'dim': 64,
-    'slide_stride': 1,
+    'slide_stride': 3,
     'comment': '',
     'seed': 5,
     'out_layer_num': 1,
@@ -51,7 +51,7 @@ env_config = {
     'dataset': 'msl',
     'report': 'best',
     'device': 'cpu',
-    'load_model_path': '/content/Anomalies-detection---Vector-workshop/pretrained_model/best_08_27-05_50_39.pt'
+    'load_model_path': '/content/Anomalies-detection---Vector-workshop/pretrained_model/best_08_28-04_21_38.pt'
 }
 
 
@@ -88,7 +88,7 @@ if __name__ == "__main__":
     # checkpoint = torch.load(os.path.join("data", env_config['dataset'], "best.pt"),
     #                         map_location=torch.device('cpu'))
 
-    checkpoint = torch.load("/content/Anomalies-detection---Vector-workshop/pretrained_model/best_08_27-05_50_39.pt",
+    checkpoint = torch.load("/content/Anomalies-detection---Vector-workshop/pretrained_model/best_08_28-04_21_38.pt",
                             map_location=torch.device('cpu'))
 
     main.model.load_state_dict(checkpoint)
